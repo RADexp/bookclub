@@ -316,7 +316,6 @@ function renderReadList(books) {
 
       ratingEl.appendChild(stars);
       ratingEl.appendChild(label);
-      ratingEl.appendChild(document.createTextNode(" / 5"));
       info.appendChild(ratingEl);
     }
 
