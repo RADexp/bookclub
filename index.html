@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finer Things Book Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="page-header">
+    <div class="container">
+      <h1>Finer Things Book Club</h1>
+      <p class="tagline">Wyselekcjonowane lektury dla miłośniczek i miłośników wysmakowanej literatury.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section aria-labelledby="now-reading-title" class="panel now-reading">
+      <div class="section-heading">
+        <h2 id="now-reading-title">Teraz czytamy</h2>
+        <p class="section-subtitle" id="now-reading-status" aria-live="polite">Ładuję dane…</p>
+      </div>
+      <div id="now-reading-content" class="now-reading-content"></div>
+    </section>
+
+    <section aria-labelledby="read-title" class="panel read-list">
+      <div class="section-heading">
+        <h2 id="read-title">Przeczytane</h2>
+        <p class="section-subtitle" id="read-status" aria-live="polite">Ładuję dane…</p>
+      </div>
+      <div id="read-list" class="card-grid" role="list"></div>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <div class="container">
+      <p id="update-info" aria-live="polite">Dane aktualizowane automatycznie z Google Sheets.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
