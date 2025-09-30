@@ -68,6 +68,34 @@ function parseCSV(text) {
 function toBooks(rows) {
   if (!rows.length) return [];
   const headers = rows[0].map((header) => header.trim());
+  const normalizedHeaders = headers.map((header) => normalizeHeader(header));
+
+  const findHeader = (...aliases) => {
+    for (const alias of aliases) {
+      const normalizedAlias = normalizeHeader(alias);
+      const index = normalizedHeaders.indexOf(normalizedAlias);
+      if (index !== -1) {
+        return headers[index];
+      }
+    }
+    return null;
+  };
+
+  const getValue = (record, fallbackIndex, ...aliases) => {
+    const header = findHeader(...aliases);
+    if (header && record[header]) {
+      return record[header].trim();
+    }
+    if (
+      Number.isInteger(fallbackIndex) &&
+      headers[fallbackIndex] &&
+      record[headers[fallbackIndex]]
+    ) {
+      return record[headers[fallbackIndex]].trim();
+    }
+    return "";
+  };
+
   return rows
     .slice(1)
     .map((row) => {
@@ -76,15 +104,60 @@ function toBooks(rows) {
         record[header] = row[index] ? row[index].trim() : "";
       });
       return {
-        title: record[headers[0]] || "",
-        author: record[headers[1]] || "",
-        cover: record[headers[2]] || "",
-        note: record[headers[3]] || "",
-        link: record[headers[4]] || "",
-        picker: record[headers[5]] || "",
-        status: (record[headers[6]] || "").toLowerCase(),
-        meetingDateRaw: record[headers[7]] || "",
-        ratingRaw: record[headers[8]] || ""
+        title: getValue(record, 0, "Tytuł", "Title"),
+        author: getValue(record, 1, "Autor", "Author"),
+        note: getValue(
+          record,
+          2,
+          "Notatka",
+          "Notatki",
+          "Opis",
+          "Note",
+          "Notes",
+          "Description"
+        ),
+        cover: getValue(
+          record,
+          3,
+          "Okładka",
+          "Okładka URL",
+          "Okładka (URL)",
+          "URL okładki",
+          "Cover",
+          "Cover URL"
+        ),
+        link: getValue(
+          record,
+          4,
+          "Link",
+          "Link do książki",
+          "Goodreads",
+          "Lubimy Czytać",
+          "Lubimyczytać",
+          "Lubimyczytac",
+          "Book Link"
+        ),
+        picker: getValue(
+          record,
+          5,
+          "Wybrała",
+          "Wybrala",
+          "Wybrał",
+          "Wybral",
+          "Picker",
+          "Suggested By",
+          "Selected By"
+        ),
+        status: getValue(record, 6, "Status").toLowerCase(),
+        meetingDateRaw: getValue(
+          record,
+          7,
+          "Data spotkania",
+          "Spotkanie",
+          "Meeting Date",
+          "Data"
+        ),
+        ratingRaw: getValue(record, 8, "Ocena", "Rating")
       };
     })
     .filter((book) => book.title);
@@ -212,7 +285,7 @@ function renderReadList(books) {
       info.appendChild(picker);
     }
 
-    if (book.note) {
+    if (shouldDisplayNote(book.note, book.cover)) {
       const note = document.createElement("p");
       note.className = "note";
       note.textContent = book.note;
@@ -252,8 +325,9 @@ function renderReadList(books) {
   });
 }
 
-function createCoverElement(url, title, placeholderClass) {
+function createCoverElement(rawUrl, title, placeholderClass) {
   const wrapper = document.createElement("div");
+  const url = extractImageUrl(rawUrl);
   if (isValidHttpUrl(url)) {
     const img = document.createElement("img");
     img.src = url;
@@ -276,6 +350,57 @@ function initialsFromTitle(title = "") {
     .slice(0, 2)
     .map((word) => word[0]?.toUpperCase() || "")
     .join("") || "FT";
+}
+
+function shouldDisplayNote(note, cover) {
+  if (!note) return false;
+  const trimmedNote = note.trim();
+  if (!trimmedNote) return false;
+  const normalizedCover = extractImageUrl(cover).trim();
+  if (normalizedCover && trimmedNote === normalizedCover) {
+    return false;
+  }
+  return !isValidHttpUrl(trimmedNote);
+}
+
+function extractImageUrl(value) {
+  if (!value) return "";
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+
+  const doubleQuoted = trimmed.match(/^=\s*IMAGE\(("[^"\\]*(?:\\.[^"\\]*)?")/i);
+  if (doubleQuoted) {
+    const unwrapped = doubleQuoted[1].slice(1, -1);
+    return unescapeGoogleFormulaString(unwrapped);
+  }
+
+  const singleQuoted = trimmed.match(/^=\s*IMAGE\((\'[^\'\\]*(?:\\.[^\'\\]*)?\')/i);
+  if (singleQuoted) {
+    const unwrapped = singleQuoted[1].slice(1, -1);
+    return unescapeGoogleFormulaString(unwrapped);
+  }
+
+  const firstArgumentMatch = trimmed.match(/^=\s*IMAGE\(([^,;\)]+)/i);
+  if (firstArgumentMatch) {
+    const firstArgument = firstArgumentMatch[1].trim();
+    const unquoted = firstArgument.replace(/^['"]|['"]$/g, "");
+    return unescapeGoogleFormulaString(unquoted);
+  }
+
+  return trimmed;
+}
+
+function unescapeGoogleFormulaString(value) {
+  return value.replace(/""/g, '"').replace(/''/g, "'").trim();
+}
+
+function normalizeHeader(value) {
+  return (value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
 }
 
 function formatMeetingDate(dateString) {
