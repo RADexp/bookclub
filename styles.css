@@ -277,22 +277,21 @@ main.container {
   gap: 0.3rem;
 }
 
+
 .star-rating {
   position: relative;
   display: inline-block;
   font-size: 1.1rem;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.6);
-  background: linear-gradient(90deg, var(--pink-400), var(--pink-500));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .star-rating::before {
   content: "★★★★★";
-  color: rgba(255, 255, 255, 0.25);
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 161, 203, 0.3);
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.1px rgba(255, 161, 203, 0.9);
+  text-shadow: 0 0 1px rgba(255, 161, 203, 0.7);
 }
 
 .star-rating::after {
@@ -305,6 +304,7 @@ main.container {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.1px rgba(255, 161, 203, 0.35);
   width: var(--fill, 0%);
   overflow: hidden;
 }
