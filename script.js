@@ -292,11 +292,11 @@ function renderReadList(books) {
       info.appendChild(note);
     }
 
-    const meeting = formatMeetingDate(book.meetingDateRaw);
-    if (meeting) {
+    const meetingDate = parseDate(book.meetingDateRaw);
+    if (meetingDate) {
       const meetingEl = document.createElement("p");
       meetingEl.className = "meeting";
-      meetingEl.textContent = meeting;
+      meetingEl.textContent = formatMonthYear(meetingDate);
       info.appendChild(meetingEl);
     }
 
@@ -406,6 +406,12 @@ function formatMeetingDate(dateString) {
   const date = parseDate(dateString);
   if (!date) return "";
   return `Porozmawiamy o książce: ${formatDate(date)}`;
+}
+
+function formatMonthYear(date) {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${month}.${year}`;
 }
 
 function parseDate(input) {
