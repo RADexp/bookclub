@@ -151,13 +151,12 @@ main.container {
   align-items: center;
   padding: 0.2rem 0.75rem;
   border-radius: 999px;
-  background: rgba(64, 38, 59, 0.92);
-  color: rgba(255, 255, 255, 0.92);
+  background: #f29ac6;
+  color: rgba(64, 38, 59, 0.92);
   font-weight: 600;
   font-size: 0.85rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  box-shadow: 0 6px 14px rgba(64, 38, 59, 0.25);
 }
 
 .now-reading-details h3 {
