@@ -106,6 +106,7 @@ function toBooks(rows) {
       return {
         title: getValue(record, 0, "Tytuł", "Title"),
         author: getValue(record, 1, "Autor", "Author"),
+        genre: getValue(record, undefined, "Gatunek", "Gatunki", "Genre", "Category"),
         note: getValue(
           record,
           2,
@@ -203,6 +204,14 @@ function renderNowReading(books) {
     details.appendChild(author);
   }
 
+  const genreTags = createGenreTags(currentBook.genre);
+  if (genreTags.length) {
+    const genreContainer = document.createElement("div");
+    genreContainer.className = "genre-tags";
+    genreTags.forEach((tag) => genreContainer.appendChild(tag));
+    details.appendChild(genreContainer);
+  }
+
   if (currentBook.picker) {
     const picker = document.createElement("p");
     picker.className = "picker";
@@ -278,6 +287,14 @@ function renderReadList(books) {
       info.appendChild(author);
     }
 
+    const genreTags = createGenreTags(book.genre);
+    if (genreTags.length) {
+      const genreContainer = document.createElement("div");
+      genreContainer.className = "genre-tags";
+      genreTags.forEach((tag) => genreContainer.appendChild(tag));
+      info.appendChild(genreContainer);
+    }
+
     if (book.picker) {
       const picker = document.createElement("p");
       picker.className = "picker";
@@ -340,6 +357,20 @@ function createCoverElement(rawUrl, title, placeholderClass) {
     wrapper.appendChild(placeholder);
   }
   return wrapper;
+}
+
+function createGenreTags(value) {
+  if (!value) return [];
+  const parts = value
+    .split(/[,/|#]/)
+    .map((part) => part.replace(/^#+/, "").trim())
+    .filter(Boolean);
+  return parts.map((part) => {
+    const tag = document.createElement("span");
+    tag.className = "genre-tag";
+    tag.textContent = part;
+    return tag;
+  });
 }
 
 function initialsFromTitle(title = "") {
