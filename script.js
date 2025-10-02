@@ -302,10 +302,11 @@ function renderReadList(books) {
       info.appendChild(picker);
     }
 
-    if (shouldDisplayNote(book.note, book.cover)) {
+    const noteText = book.note?.trim();
+    if (noteText && !isValidHttpUrl(noteText) && noteText !== extractImageUrl(book.cover).trim()) {
       const note = document.createElement("p");
       note.className = "note";
-      note.textContent = book.note;
+      note.textContent = noteText;
       info.appendChild(note);
     }
 
@@ -380,17 +381,6 @@ function initialsFromTitle(title = "") {
     .slice(0, 2)
     .map((word) => word[0]?.toUpperCase() || "")
     .join("") || "FT";
-}
-
-function shouldDisplayNote(note, cover) {
-  if (!note) return false;
-  const trimmedNote = note.trim();
-  if (!trimmedNote) return false;
-  const normalizedCover = extractImageUrl(cover).trim();
-  if (normalizedCover && trimmedNote === normalizedCover) {
-    return false;
-  }
-  return !isValidHttpUrl(trimmedNote);
 }
 
 function extractImageUrl(value) {
