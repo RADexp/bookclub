@@ -172,7 +172,7 @@ function renderNowReading(books) {
     return;
   }
 
-  nowReadingStatus.textContent = "Zaktualizowano.";
+  nowReadingStatus.textContent = "";
   const card = document.createElement("article");
   card.className = "now-reading-card";
 
@@ -244,7 +244,7 @@ function renderReadList(books) {
     return;
   }
 
-  readStatus.textContent = "Zaktualizowano.";
+  readStatus.textContent = "";
 
   readBooks.forEach((book) => {
     const item = document.createElement("article");
