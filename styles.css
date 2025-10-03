@@ -136,8 +136,12 @@ main.container {
 .now-reading-details {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1.5rem;
+  gap: 0.6rem;
+}
+
+.now-reading-details > :where(h3, p) {
+  margin: 0;
+  line-height: 1.5;
 }
 
 .genre-tags {
@@ -204,6 +208,7 @@ main.container {
 
 .meeting-date {
   margin-top: auto;
+  padding-top: 1rem;
   font-weight: 600;
 }
 
