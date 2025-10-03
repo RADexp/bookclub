@@ -107,16 +107,6 @@ function toBooks(rows) {
         title: getValue(record, 0, "Tytuł", "Title"),
         author: getValue(record, 1, "Autor", "Author"),
         genre: getValue(record, undefined, "Gatunek", "Gatunki", "Genre", "Category"),
-        note: getValue(
-          record,
-          2,
-          "Notatka",
-          "Notatki",
-          "Opis",
-          "Note",
-          "Notes",
-          "Description"
-        ),
         cover: getValue(
           record,
           3,
@@ -300,14 +290,6 @@ function renderReadList(books) {
       picker.className = "picker";
       picker.innerHTML = `<span class="meta-label">Wybrała:</span> ${book.picker}`;
       info.appendChild(picker);
-    }
-
-    const noteText = book.note?.trim();
-    if (noteText && !isValidHttpUrl(noteText) && noteText !== extractImageUrl(book.cover).trim()) {
-      const note = document.createElement("p");
-      note.className = "note";
-      note.textContent = noteText;
-      info.appendChild(note);
     }
 
     const meetingDate = parseDate(book.meetingDateRaw);
