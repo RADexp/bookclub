@@ -152,6 +152,11 @@ main.container {
   position: relative;
 }
 
+.now-reading-details a:hover,
+.now-reading-details a:focus-visible {
+  color: var(--pink-500);
+}
+
 .now-reading-details a::after {
   content: "";
   position: absolute;
